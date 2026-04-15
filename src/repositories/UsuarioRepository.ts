@@ -1,7 +1,6 @@
 import prisma from "../prisma/prismaClient";
 
 export class UsuarioRepository {
-  // Método existente (sem paginação) - pode manter
   async findAll() {
     return prisma.usuarios.findMany({
       where: { deletado_em: null },
@@ -9,15 +8,15 @@ export class UsuarioRepository {
         id: true,
         nome: true,
         email: true,
+        cpf: true,
         permissao: true,
         ativo: true,
         criado_em: true,
         atualizado_em: true,
-      },
+      } as any,
     });
   }
 
-  // NOVO: método com paginação
   async findAllPaginated(skip: number, limit: number) {
     return prisma.usuarios.findMany({
       where: { deletado_em: null },
@@ -27,29 +26,45 @@ export class UsuarioRepository {
         id: true,
         nome: true,
         email: true,
+        cpf: true,
         permissao: true,
         ativo: true,
         criado_em: true,
         atualizado_em: true,
-      },
+      } as any,
       orderBy: { criado_em: "desc" },
     });
   }
 
-  // NOVO: contar total de registros
   async countAll() {
     return prisma.usuarios.count({
       where: { deletado_em: null },
     });
   }
 
-  // ... resto dos métodos existentes (findById, findByEmail, etc)
   async findById(id: number) {
-    return prisma.usuarios.findUnique({ where: { id } });
+    return prisma.usuarios.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        cpf: true,
+        senha: true,
+        permissao: true,
+        ativo: true,
+        criado_em: true,
+        atualizado_em: true,
+      } as any,
+    });
   }
 
   async findByEmail(email: string) {
     return prisma.usuarios.findUnique({ where: { email } });
+  }
+
+  async findByCpf(cpf: string) {
+    return prisma.usuarios.findFirst({ where: { cpf } as any });
   }
 
   async create(data: any) {

@@ -12,5 +12,6 @@ router.post("/", usuarioController.criar);
 router.get("/", authMiddleware, usuarioController.listar);
 router.put("/:id", authMiddleware, verificarProprietario, usuarioController.atualizar);
 router.delete("/:id", authMiddleware, verificarProprietario, usuarioController.deletar);
+router.put("/:id/senha", authMiddleware, verificarProprietario, usuarioController.alterarSenha);
 
 export default router;

@@ -9,6 +9,7 @@ export interface IOrcamento {
   id_usuario: number | null;
   id_cliente: number | null;
   id_veiculo: number | null;
+  id_departamento: number | null; // 👈 NOVO
   criado_em: Date;
   atualizado_em: Date;
   deletado_em: Date | null;
@@ -24,6 +25,7 @@ export interface ICreateOrcamentoDTO {
   id_usuario?: number;
   id_cliente?: number;
   id_veiculo?: number;
+  id_departamento?: number; // 👈 NOVO
 }
 
 export interface IUpdateOrcamentoDTO {
@@ -33,7 +35,7 @@ export interface IUpdateOrcamentoDTO {
   data_inicio?: Date;
   data_termino?: Date;
   descricao?: string;
-  id_usuario?: number;
   id_cliente?: number;
   id_veiculo?: number;
+  id_departamento?: number; // 👈 NOVO
 }

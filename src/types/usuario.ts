@@ -2,7 +2,7 @@ export interface UsuarioData {
   nome: string;
   email: string;
   senha: string;
-  cpf?: string;
+  cpf: string;
   permissao?: string;
   ativo?: boolean;
 }

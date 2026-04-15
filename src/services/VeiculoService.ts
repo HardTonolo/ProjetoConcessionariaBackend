@@ -10,7 +10,6 @@ export class VeiculoService {
     this.repository = new VeiculoRepository();
   }
 
-  // NOVO: listar com paginação
   async listarComPaginacao(page?: number, limit?: number) {
     const { page: pageNum, limit: limitNum, skip } = getPaginationParams({ page, limit });
     
@@ -32,10 +31,10 @@ export class VeiculoService {
     return veiculo;
   }
 
-  async criar(data: ICreateVeiculoDTO) {
+  async criar(data: ICreateVeiculoDTO, usuarioId: number) {
     this.validarCriacao(data);
     await this.verificarPlacaUnica(data.placa);
-    return this.repository.create(this.montarDadosCriacao(data));
+    return this.repository.create(this.montarDadosCriacao(data, usuarioId));
   }
 
   async atualizar(id: number, data: IUpdateVeiculoDTO) {
@@ -71,13 +70,12 @@ export class VeiculoService {
     if (existe && existe.id !== id) throw new Error("Placa já cadastrada");
   }
 
-  private montarDadosCriacao(data: ICreateVeiculoDTO) {
+  private montarDadosCriacao(data: ICreateVeiculoDTO, usuarioId: number) {
     return {
       placa: data.placa.toUpperCase(),
       modelo: data.modelo,
       id_cliente: data.id_cliente || null,
-      id_usuario: data.id_usuario || null,
-      id_departamento: data.id_departamento || null,
+      id_usuario: usuarioId,  // 👈 SALVA O USUÁRIO LOGADO
     };
   }
 
@@ -87,7 +85,6 @@ export class VeiculoService {
       modelo: data.modelo,
       id_cliente: data.id_cliente,
       id_usuario: data.id_usuario,
-      id_departamento: data.id_departamento,
       atualizado_em: new Date(),
     };
   }

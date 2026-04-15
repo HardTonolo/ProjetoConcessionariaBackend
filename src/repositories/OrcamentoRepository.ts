@@ -6,43 +6,80 @@ export class OrcamentoRepository {
       where: { deletado_em: null },
       include: {
         usuarios: { select: { id: true, nome: true, email: true } },
-        clientes: { select: { id: true, nome: true, cpf: true } },
-        veiculos: { select: { id: true, placa: true, modelo: true } },
-      },
-    });
-  }
-
-  // NOVO: método com paginação
-  async findAllPaginated(skip: number, limit: number) {
-    return prisma.orcamentos.findMany({
-      where: { deletado_em: null },
-      skip,
-      take: limit,
-      include: {
-        usuarios: { select: { id: true, nome: true, email: true } },
-        clientes: { select: { id: true, nome: true, cpf: true } },
+        clientes: { select: { id: true, nome: true, cpf: true, telefone: true } },
         veiculos: { select: { id: true, placa: true, modelo: true } },
       },
       orderBy: { criado_em: "desc" },
     });
   }
 
-  // NOVO: contar total
-  async countAll() {
-    return prisma.orcamentos.count({
-      where: { deletado_em: null },
+  async findAllPaginated(skip: number, limit: number, etapa?: string) {
+    const where: any = { deletado_em: null };
+    
+    // 👈 FILTRO POR ETAPA
+    if (etapa && etapa !== 'todas') {
+      where.etapa = etapa;
+    }
+    
+    const orcamentos = await prisma.orcamentos.findMany({
+      where,
+      skip,
+      take: limit,
+      include: {
+        usuarios: { select: { id: true, nome: true, email: true } },
+        clientes: { select: { id: true, nome: true, cpf: true, telefone: true } },
+        veiculos: { select: { id: true, placa: true, modelo: true } },
+      },
+      orderBy: { criado_em: "desc" },
     });
+
+    // Buscar departamentos separadamente
+    const orcamentosComDepartamentos = await Promise.all(
+      orcamentos.map(async (orcamento) => {
+        if (orcamento.id_departamento) {
+          const departamento = await prisma.departamentos.findUnique({
+            where: { id: orcamento.id_departamento },
+            select: { id: true, nome: true },
+          });
+          return { ...orcamento, departamentos: departamento };
+        }
+        return { ...orcamento, departamentos: null };
+      })
+    );
+
+    return orcamentosComDepartamentos;
+  }
+
+  async countAll(etapa?: string) {
+    const where: any = { deletado_em: null };
+    
+    // 👈 FILTRO POR ETAPA NO COUNT
+    if (etapa && etapa !== 'todas') {
+      where.etapa = etapa;
+    }
+    
+    return prisma.orcamentos.count({ where });
   }
 
   async findById(id: number) {
-    return prisma.orcamentos.findUnique({
+    const orcamento = await prisma.orcamentos.findUnique({
       where: { id },
       include: {
         usuarios: { select: { id: true, nome: true, email: true } },
-        clientes: { select: { id: true, nome: true, cpf: true } },
+        clientes: { select: { id: true, nome: true, cpf: true, telefone: true } },
         veiculos: { select: { id: true, placa: true, modelo: true } },
       },
     });
+
+    if (orcamento && orcamento.id_departamento) {
+      const departamento = await prisma.departamentos.findUnique({
+        where: { id: orcamento.id_departamento },
+        select: { id: true, nome: true },
+      });
+      return { ...orcamento, departamentos: departamento };
+    }
+
+    return { ...orcamento, departamentos: null };
   }
 
   async create(data: any) {

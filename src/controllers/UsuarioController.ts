@@ -44,4 +44,20 @@ export class UsuarioController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  async alterarSenha(req: Request, res: Response) {
+    try {
+      const id = Number(req.params.id);
+      const { senhaAtual, novaSenha } = req.body;
+      
+      if (!senhaAtual || !novaSenha) {
+        return res.status(400).json({ error: "Senha atual e nova senha são obrigatórias" });
+      }
+      
+      const resultado = await usuarioService.alterarSenha(id, senhaAtual, novaSenha);
+      res.json(resultado);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }

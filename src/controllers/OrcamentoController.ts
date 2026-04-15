@@ -16,8 +16,9 @@ export class OrcamentoController {
     try {
       const page = req.query.page ? Number(req.query.page) : undefined;
       const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const etapa = req.query.etapa as string; // 👈 PEGAR O PARÂMETRO
       
-      const resultado = await orcamentoService.listarComPaginacao(page, limit);
+      const resultado = await orcamentoService.listarComPaginacao(page, limit, etapa);
       res.json(resultado);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

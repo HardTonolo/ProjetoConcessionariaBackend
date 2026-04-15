@@ -27,7 +27,7 @@ model departamentos {
   criado_em     DateTime   @default(now()) @db.Timestamp(0)
   atualizado_em DateTime   @default(now()) @db.Timestamp(0)
   deletado_em   DateTime?  @db.Timestamp(0)
-  veiculos      veiculos[]
+  orcamentos    orcamentos[]
 }
 
 model enderecos {
@@ -42,39 +42,37 @@ model enderecos {
   criado_em     DateTime  @default(now()) @db.Timestamp(0)
   atualizado_em DateTime  @default(now()) @db.Timestamp(0)
   deletado_em   DateTime? @db.Timestamp(0)
-  clientes      clientes? @relation(fields: [id_cliente], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "enderecos_ibfk_1")
-
-  @@index([id_cliente], map: "id_cliente")
+  clientes      clientes? @relation(fields: [id_cliente], references: [id])
 }
 
 model orcamentos {
-  id            Int       @id @default(autoincrement())
-  id_usuario    Int?
-  id_cliente    Int?
-  id_veiculo    Int?
-  etapa         String?   @db.VarChar(255)
-  valor_inicial String?   @db.VarChar(255)
-  valor_final   String?   @db.VarChar(255)
-  data_inicio   DateTime? @db.Date
-  data_termino  DateTime? @db.Date
-  descricao     String?   @db.VarChar(255)
-  criado_em     DateTime  @default(now()) @db.Timestamp(0)
-  atualizado_em DateTime  @default(now()) @db.Timestamp(0)
-  deletado_em   DateTime? @db.Timestamp(0)
-  usuarios      usuarios? @relation(fields: [id_usuario], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "orcamentos_ibfk_1")
-  clientes      clientes? @relation(fields: [id_cliente], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "orcamentos_ibfk_2")
-  veiculos      veiculos? @relation(fields: [id_veiculo], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "orcamentos_ibfk_3")
+  id              Int          @id @default(autoincrement())
+  id_usuario      Int?
+  id_cliente      Int?
+  id_veiculo      Int?
+  id_departamento Int?
+  etapa           String?      @db.VarChar(255)
+  valor_inicial   String?      @db.VarChar(255)
+  valor_final     String?      @db.VarChar(255)
+  data_inicio     DateTime?    @db.Date
+  data_termino    DateTime?    @db.Date
+  descricao       String?      @db.VarChar(255)
+  criado_em       DateTime     @default(now()) @db.Timestamp(0)
+  atualizado_em   DateTime     @default(now()) @db.Timestamp(0)
+  deletado_em     DateTime?    @db.Timestamp(0)
 
-  @@index([id_cliente], map: "id_cliente")
-  @@index([id_usuario], map: "id_usuario")
-  @@index([id_veiculo], map: "id_veiculo")
+  usuarios      usuarios?      @relation(fields: [id_usuario], references: [id])
+  clientes      clientes?      @relation(fields: [id_cliente], references: [id])
+  veiculos      veiculos?      @relation(fields: [id_veiculo], references: [id])
+  departamentos departamentos? @relation(fields: [id_departamento], references: [id])
 }
 
 model usuarios {
   id            Int          @id @default(autoincrement())
   nome          String?      @db.VarChar(255)
-  email         String?      @unique(map: "email") @db.VarChar(255)
+  email         String?      @unique @db.VarChar(255)
   senha         String?      @db.VarChar(255)
+  cpf           String?      @unique @db.VarChar(14)
   permissao     String?      @db.VarChar(255)
   ativo         Boolean?
   criado_em     DateTime     @default(now()) @db.Timestamp(0)
@@ -87,7 +85,6 @@ model usuarios {
 model veiculos {
   id              Int            @id @default(autoincrement())
   id_usuario      Int?
-  id_departamento Int?
   id_cliente      Int?
   placa           String?        @db.VarChar(255)
   modelo          String?        @db.VarChar(255)
@@ -95,11 +92,6 @@ model veiculos {
   atualizado_em   DateTime       @default(now()) @db.Timestamp(0)
   deletado_em     DateTime?      @db.Timestamp(0)
   orcamentos      orcamentos[]
-  usuarios        usuarios?      @relation(fields: [id_usuario], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "veiculos_ibfk_1")
-  departamentos   departamentos? @relation(fields: [id_departamento], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "veiculos_ibfk_2")
-  clientes        clientes?      @relation(fields: [id_cliente], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "veiculos_ibfk_3")
-
-  @@index([id_cliente], map: "id_cliente")
-  @@index([id_departamento], map: "id_departamento")
-  @@index([id_usuario], map: "id_usuario")
+  usuarios        usuarios?      @relation(fields: [id_usuario], references: [id])
+  clientes        clientes?      @relation(fields: [id_cliente], references: [id])
 }

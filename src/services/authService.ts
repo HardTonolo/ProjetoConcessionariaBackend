@@ -10,7 +10,18 @@ export const login = async (email: string, senha: string) => {
 
   const usuario = await prisma.usuarios.findUnique({
     where: { email },
-  });
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      cpf: true,
+      senha: true,
+      permissao: true,
+      ativo: true,
+      criado_em: true,
+      atualizado_em: true,
+    } as any,
+  }) as any; // 👈 FORÇAR TIPO AQUI
 
   if (!usuario) {
     throw new Error("Email ou senha inválidos");

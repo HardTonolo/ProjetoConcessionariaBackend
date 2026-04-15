@@ -1,62 +1,55 @@
 import prisma from "../prisma/prismaClient";
 
-export class VeiculoRepository {
+export class EnderecoRepository {
   async findAll() {
-    return prisma.veiculos.findMany({
+    return prisma.enderecos.findMany({
       where: { deletado_em: null },
-      include: {
-        clientes: true,
-        usuarios: true,
-      },
+      include: { clientes: true },
     });
   }
 
   async findAllPaginated(skip: number, limit: number) {
-    return prisma.veiculos.findMany({
+    return prisma.enderecos.findMany({
       where: { deletado_em: null },
       skip,
       take: limit,
-      include: {
-        clientes: true,
-        usuarios: true,
-      },
+      include: { clientes: true },
       orderBy: { criado_em: "desc" },
     });
   }
 
   async countAll() {
-    return prisma.veiculos.count({
+    return prisma.enderecos.count({
       where: { deletado_em: null },
     });
   }
 
   async findById(id: number) {
-    return prisma.veiculos.findUnique({
+    return prisma.enderecos.findUnique({
       where: { id },
-      include: {
-        clientes: true,
-        usuarios: true,
-      },
+      include: { clientes: true },
     });
   }
 
-  async findByPlaca(placa: string) {
-    return prisma.veiculos.findFirst({ where: { placa } });
+  async findByClienteId(clienteId: number) {
+    return prisma.enderecos.findMany({
+      where: { id_cliente: clienteId, deletado_em: null },
+    });
   }
 
   async create(data: any) {
-    return prisma.veiculos.create({ data });
+    return prisma.enderecos.create({ data });
   }
 
   async update(id: number, data: any) {
-    return prisma.veiculos.update({
+    return prisma.enderecos.update({
       where: { id },
       data,
     });
   }
 
   async softDelete(id: number) {
-    return prisma.veiculos.update({
+    return prisma.enderecos.update({
       where: { id },
       data: { deletado_em: new Date() },
     });

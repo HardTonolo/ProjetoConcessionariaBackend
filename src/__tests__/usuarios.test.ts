@@ -2,16 +2,32 @@ import request from "supertest";
 import app from "../app";
 
 let token: string;
-let userId: number;
+let usuarioEmail: string;
+let usuarioId: number;
 
 describe("CRUD Usuários", () => {
   beforeAll(async () => {
+    // Criar email único para teste
+    usuarioEmail = `teste${Date.now()}@email.com`;
+    
+    // Criar usuário via API com CPF válido
+    const criarRes = await request(app)
+      .post("/usuarios")
+      .send({
+        nome: "Usuario Teste",
+        email: usuarioEmail,
+        senha: "Teste@123",
+        cpf: "52998224725", // CPF válido
+      });
+
+    // Fazer login
     const login = await request(app).post("/auth/login").send({
-      email: "joao@teste.com",
-      senha: "Senha@123",
+      email: usuarioEmail,
+      senha: "Teste@123",
     });
+    
     token = login.body.token;
-    userId = login.body.usuario.id;
+    usuarioId = login.body.usuario.id;
   });
 
   test("criar usuário com email inválido retorna erro", async () => {
@@ -21,6 +37,7 @@ describe("CRUD Usuários", () => {
         nome: "Teste",
         email: "invalido",
         senha: "Senha@123",
+        cpf: "52998224725",
       });
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Email inválido");
@@ -33,9 +50,22 @@ describe("CRUD Usuários", () => {
         nome: "Teste",
         email: `teste${Date.now()}@email.com`,
         senha: "senha123",
+        cpf: "52998224725",
       });
     expect(res.status).toBe(400);
     expect(res.body.error).toContain("senha deve ter no mínimo");
+  });
+
+  test("criar usuário sem nome retorna erro", async () => {
+    const res = await request(app)
+      .post("/usuarios")
+      .send({
+        email: `teste${Date.now()}@email.com`,
+        senha: "Senha@123",
+        cpf: "52998224725",
+      });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Nome, email, senha e CPF são obrigatórios");
   });
 
   test("listar usuários com token válido", async () => {
@@ -53,22 +83,10 @@ describe("CRUD Usuários", () => {
 
   test("tentar alterar email retorna erro", async () => {
     const res = await request(app)
-      .put(`/usuarios/${userId}`)
+      .put(`/usuarios/${usuarioId}`)
       .set("Authorization", `Bearer ${token}`)
       .send({ email: "novo@email.com" });
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Não é permitido alterar o email");
-  });
-
-  // NOVO TESTE 3
-  test("criar usuário sem nome retorna erro", async () => {
-    const res = await request(app)
-      .post("/usuarios")
-      .send({
-        email: "teste@email.com",
-        senha: "Senha@123",
-      });
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Nome, email e senha são obrigatórios");
   });
 });

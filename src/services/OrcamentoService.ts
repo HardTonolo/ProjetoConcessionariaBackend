@@ -10,13 +10,12 @@ export class OrcamentoService {
     this.repository = new OrcamentoRepository();
   }
 
-  // NOVO: listar com paginação
-  async listarComPaginacao(page?: number, limit?: number) {
+  async listarComPaginacao(page?: number, limit?: number, etapa?: string) {
     const { page: pageNum, limit: limitNum, skip } = getPaginationParams({ page, limit });
     
     const [orcamentos, total] = await Promise.all([
-      this.repository.findAllPaginated(skip, limitNum),
-      this.repository.countAll(),
+      this.repository.findAllPaginated(skip, limitNum, etapa),
+      this.repository.countAll(etapa),
     ]);
 
     return formatPaginatedResponse(orcamentos, total, pageNum, limitNum);
@@ -49,7 +48,6 @@ export class OrcamentoService {
     return { message: "Orçamento deletado com sucesso" };
   }
 
-  // Métodos auxiliares
   private montarDadosCriacao(data: ICreateOrcamentoDTO, usuarioId: number) {
     return {
       etapa: data.etapa || "orçamento",
@@ -61,6 +59,7 @@ export class OrcamentoService {
       id_usuario: usuarioId,
       id_cliente: data.id_cliente,
       id_veiculo: data.id_veiculo,
+      id_departamento: data.id_departamento ? Number(data.id_departamento) : null,
     };
   }
 
@@ -74,6 +73,7 @@ export class OrcamentoService {
       descricao: data.descricao,
       id_cliente: data.id_cliente,
       id_veiculo: data.id_veiculo,
+      id_departamento: data.id_departamento ? Number(data.id_departamento) : undefined,
       atualizado_em: new Date(),
     };
   }

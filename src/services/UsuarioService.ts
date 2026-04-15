@@ -35,20 +35,18 @@ export class UsuarioService {
   async criar(data: UsuarioData) {
     this.validarCriacao(data);
     await this.verificarEmailUnico(data.email);
-    
+    await this.verificarCpfUnico(data.cpf);
     const senhaHash = await this.gerarHashSenha(data.senha);
     const usuario = await this.repository.create(this.montarDadosCriacao(data, senhaHash));
-    
     return this.removerSenha(usuario);
   }
 
   async atualizar(id: number, data: UsuarioUpdateData) {
     await this.buscarPorId(id);
     this.validarAtualizacao(data);
-    
+    await this.verificarCpfUnicoAtualizacao(data.cpf, id);
     const senhaHash = data.senha ? await this.gerarHashSenha(data.senha) : undefined;
     const usuario = await this.repository.update(id, this.montarDadosAtualizacao(data, senhaHash));
-    
     return this.removerSenha(usuario);
   }
 
@@ -58,7 +56,29 @@ export class UsuarioService {
     return { message: "Usuário deletado com sucesso" };
   }
 
-  // Métodos auxiliares (privados) - todos com ≤ 10 linhas
+  async alterarSenha(id: number, senhaAtual: string, novaSenha: string) {
+  const usuario = await this.repository.findById(id) as any;
+  
+  if (!usuario) {
+    throw new Error("Usuário não encontrado");
+  }
+  
+  if (!usuario.senha) {
+    throw new Error("Usuário não possui senha cadastrada");
+  }
+  
+  const senhaValida = await bcrypt.compare(senhaAtual, usuario.senha);
+  if (!senhaValida) {
+    throw new Error("Senha atual incorreta");
+  }
+  
+  const novaSenhaHash = await bcrypt.hash(novaSenha, 10);
+  await this.repository.update(id, { senha: novaSenhaHash });
+  
+  return { message: "Senha alterada com sucesso" };
+}
+
+  // Métodos auxiliares
   private validarCriacao(data: UsuarioData) {
     UsuarioValidator.validateCreate(data);
   }
@@ -72,6 +92,17 @@ export class UsuarioService {
     if (existe) throw new Error("Email já cadastrado");
   }
 
+  private async verificarCpfUnico(cpf: string) {
+    const existe = await this.repository.findByCpf(cpf);
+    if (existe) throw new Error("CPF já cadastrado");
+  }
+
+  private async verificarCpfUnicoAtualizacao(cpf?: string, id?: number) {
+    if (!cpf) return;
+    const existe = await this.repository.findByCpf(cpf);
+    if (existe && existe.id !== id) throw new Error("CPF já cadastrado");
+  }
+
   private async gerarHashSenha(senha: string) {
     return bcrypt.hash(senha, 10);
   }
@@ -81,6 +112,7 @@ export class UsuarioService {
       nome: data.nome,
       email: data.email,
       senha: senhaHash,
+      cpf: data.cpf,
       permissao: data.permissao || "user",
       ativo: data.ativo ?? true,
     };
@@ -90,6 +122,7 @@ export class UsuarioService {
     return {
       nome: data.nome,
       senha: senhaHash,
+      cpf: data.cpf,
       permissao: data.permissao,
       ativo: data.ativo,
       atualizado_em: new Date(),
