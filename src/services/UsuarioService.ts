@@ -78,7 +78,7 @@ export class UsuarioService {
   return { message: "Senha alterada com sucesso" };
 }
 
-  // Métodos auxiliares
+ 
   private validarCriacao(data: UsuarioData) {
     UsuarioValidator.validateCreate(data);
   }

@@ -7,7 +7,7 @@ export class ClienteRepository {
     });
   }
 
-  // NOVO: método com paginação
+  
   async findAllPaginated(skip: number, limit: number) {
     return prisma.clientes.findMany({
       where: { deletado_em: null },
@@ -17,7 +17,7 @@ export class ClienteRepository {
     });
   }
 
-  // NOVO: contar total
+
   async countAll() {
     return prisma.clientes.count({
       where: { deletado_em: null },

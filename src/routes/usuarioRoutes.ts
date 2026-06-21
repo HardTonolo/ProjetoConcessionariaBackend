@@ -5,10 +5,10 @@ import { authMiddleware, verificarProprietario } from "../middlewares/authMiddle
 const router = Router();
 const usuarioController = new UsuarioController();
 
-// Rotas públicas
+
 router.post("/", usuarioController.criar);
 
-// Rotas protegidas
+
 router.get("/", authMiddleware, usuarioController.listar);
 router.put("/:id", authMiddleware, verificarProprietario, usuarioController.atualizar);
 router.delete("/:id", authMiddleware, verificarProprietario, usuarioController.deletar);

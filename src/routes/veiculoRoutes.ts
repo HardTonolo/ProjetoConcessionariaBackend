@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 const router = Router();
 const veiculoController = new VeiculoController();
 
-// Todas as rotas de veículo são autenticadas
+
 router.use(authMiddleware);
 
 router.get("/", veiculoController.listar);
