@@ -50,7 +50,7 @@ export class VeiculoService {
     return { message: "Veículo deletado com sucesso" };
   }
 
-  // Métodos auxiliares
+  
   private validarCriacao(data: ICreateVeiculoDTO) {
     VeiculoValidator.validateCreate(data);
   }
@@ -75,7 +75,7 @@ export class VeiculoService {
       placa: data.placa.toUpperCase(),
       modelo: data.modelo,
       id_cliente: data.id_cliente || null,
-      id_usuario: usuarioId,  // 👈 SALVA O USUÁRIO LOGADO
+      id_usuario: usuarioId,  
     };
   }
 

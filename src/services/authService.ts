@@ -21,7 +21,7 @@ export const login = async (email: string, senha: string) => {
       criado_em: true,
       atualizado_em: true,
     } as any,
-  }) as any; // 👈 FORÇAR TIPO AQUI
+  }) as any;
 
   if (!usuario) {
     throw new Error("Email ou senha inválidos");

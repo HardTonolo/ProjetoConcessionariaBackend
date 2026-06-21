@@ -7,7 +7,7 @@ interface TokenPayload {
   permissao: string;
 }
 
-// Extende o tipo Request
+
 interface CustomRequest extends Request {
   user?: {
     id: number;

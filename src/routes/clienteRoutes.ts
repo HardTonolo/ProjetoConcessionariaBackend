@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 const router = Router();
 const clienteController = new ClienteController();
 
-// Todas as rotas de cliente são autenticadas
+
 router.use(authMiddleware);
 
 router.get("/", clienteController.listar);

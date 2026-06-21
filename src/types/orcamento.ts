@@ -25,7 +25,7 @@ export interface ICreateOrcamentoDTO {
   id_usuario?: number;
   id_cliente?: number;
   id_veiculo?: number;
-  id_departamento?: number; // 👈 NOVO
+  id_departamento?: number; 
 }
 
 export interface IUpdateOrcamentoDTO {
@@ -37,5 +37,5 @@ export interface IUpdateOrcamentoDTO {
   descricao?: string;
   id_cliente?: number;
   id_veiculo?: number;
-  id_departamento?: number; // 👈 NOVO
+  id_departamento?: number; 
 }

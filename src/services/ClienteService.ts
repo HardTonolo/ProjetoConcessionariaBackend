@@ -10,7 +10,7 @@ export class ClienteService {
     this.repository = new ClienteRepository();
   }
 
-  // NOVO: listar com paginação
+  
   async listarComPaginacao(page?: number, limit?: number) {
     const { page: pageNum, limit: limitNum, skip } = getPaginationParams({ page, limit });
     
@@ -51,7 +51,7 @@ export class ClienteService {
     return { message: "Cliente deletado com sucesso" };
   }
 
-  // Métodos auxiliares
+  
   private validarCriacao(data: ICreateClienteDTO) {
     ClienteValidator.validateCreate(data);
   }

@@ -10,13 +10,13 @@ import authRoutes from "./routes/authRoutes";
 
 const app = express();
 
-// CORS - Permitir requisições do front-end
+
 app.use(cors());
 
-// Middleware para parsear JSON
+
 app.use(express.json());
 
-// Rota de saúde da API
+
 app.get("/", (req, res) => {
   res.send("API funcionando");
 });

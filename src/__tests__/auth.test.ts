@@ -20,7 +20,7 @@ describe("Autenticação", () => {
     expect(res.body.error).toBe("Email ou senha inválidos");
   });
 
-  // NOVO TESTE 1
+  
   test("login com email vazio retorna erro", async () => {
     const res = await request(app).post("/auth/login").send({
       email: "",
@@ -30,7 +30,7 @@ describe("Autenticação", () => {
     expect(res.body.error).toBe("Email inválido");
   });
 
-  // NOVO TESTE 2
+
   test("login com senha vazia retorna erro", async () => {
     const res = await request(app).post("/auth/login").send({
       email: "joao@teste.com",

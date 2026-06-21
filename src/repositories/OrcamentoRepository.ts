@@ -16,7 +16,7 @@ export class OrcamentoRepository {
   async findAllPaginated(skip: number, limit: number, etapa?: string) {
     const where: any = { deletado_em: null };
     
-    // 👈 FILTRO POR ETAPA
+    
     if (etapa && etapa !== 'todas') {
       where.etapa = etapa;
     }
@@ -33,7 +33,7 @@ export class OrcamentoRepository {
       orderBy: { criado_em: "desc" },
     });
 
-    // Buscar departamentos separadamente
+  
     const orcamentosComDepartamentos = await Promise.all(
       orcamentos.map(async (orcamento) => {
         if (orcamento.id_departamento) {
@@ -53,7 +53,7 @@ export class OrcamentoRepository {
   async countAll(etapa?: string) {
     const where: any = { deletado_em: null };
     
-    // 👈 FILTRO POR ETAPA NO COUNT
+    
     if (etapa && etapa !== 'todas') {
       where.etapa = etapa;
     }
