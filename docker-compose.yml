@@ -35,6 +35,17 @@ services:
     networks:
       - app-network
 
+  frontend:
+    build:
+      context: ../ProjetoConcessionariaFrontend/ProjetoConcessionariaFrontend
+      dockerfile: Dockerfile
+    container_name: concessionaria_frontend
+    restart: always
+    networks:
+      - app-network
+    environment:
+      - REACT_APP_API_URL=https://meuapp.local/api
+
   nginx:
     image: nginx:alpine
     container_name: concessionaria_nginx
@@ -47,6 +58,7 @@ services:
       - ./certs:/etc/nginx/certs:ro
     depends_on:
       - backend
+      - frontend
     networks:
       - app-network
 
