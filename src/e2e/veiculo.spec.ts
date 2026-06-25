@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 let token: string;
 let clienteId: number;
 
-// Função para gerar CPF válido
+
 function gerarCpfValido() {
   const base = [];
   for (let i = 0; i < 9; i++) {
@@ -25,7 +25,6 @@ function gerarCpfValido() {
   return [...base, digito1, digito2].join('');
 }
 
-// Função para gerar placa válida (formato Mercosul)
 function gerarPlacaValida() {
   const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numeros = '0123456789';

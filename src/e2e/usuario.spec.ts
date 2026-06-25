@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 let token: string;
 
-// Função para gerar CPF válido aleatório
+
 function gerarCpfValido() {
   const base = [];
   for (let i = 0; i < 9; i++) {
