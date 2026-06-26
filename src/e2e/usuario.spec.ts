@@ -36,7 +36,7 @@ test.beforeAll(async ({ request }) => {
 });
 
 test('CRUD Cliente - sucesso', async ({ request }) => {
-  // CREATE
+  
   const create = await request.post('/api/clientes', {
     headers: { Authorization: `Bearer ${token}` },
     data: {
@@ -49,13 +49,13 @@ test('CRUD Cliente - sucesso', async ({ request }) => {
   const cliente = await create.json();
   const clienteId = cliente.data.id;
 
-  // READ (listar)
+  
   const list = await request.get('/api/clientes', {
     headers: { Authorization: `Bearer ${token}` },
   });
   expect(list.status()).toBe(200);
 
-  // UPDATE
+  
   const update = await request.put(`/api/clientes/${clienteId}`, {
     headers: { Authorization: `Bearer ${token}` },
     data: { nome: 'Cliente Atualizado' },
@@ -63,7 +63,7 @@ test('CRUD Cliente - sucesso', async ({ request }) => {
   expect(update.status()).toBe(200);
   expect((await update.json()).data.nome).toBe('Cliente Atualizado');
 
-  // DELETE
+
   const del = await request.delete(`/api/clientes/${clienteId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
